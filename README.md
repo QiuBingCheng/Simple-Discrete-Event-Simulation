@@ -1,2 +1,3 @@
 # Single-Server-Queue-Simulation
-Use c
+Use c# to simulate the single-server queue.
+
