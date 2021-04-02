@@ -1,5 +1,5 @@
 # Simple Discrete Event Simulation
-Use c# to simulate the single-server queue.
+Use c# to simulate the simple discrete event
 
 ## Single -Server Queue
 模擬單一server的服務系統，且基於以下兩點假設
