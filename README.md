@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Simple-Discrete-Event-Simulation
 
 Use c# Winform to simulate the simple discrete event system
