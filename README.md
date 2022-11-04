@@ -6,6 +6,8 @@ Use C# Winform to simulate the simple discrete event system
 
 模擬簡單的存貨系統。
 
+介紹文章請看 [離散事件模擬(2)：Simple Inventory System (SIS)](https://medium.com/%E9%82%B1%E7%A7%89%E8%AA%A0%E7%A8%8B%E5%BC%8F%E6%9C%AD%E8%A8%98/%E9%9B%A2%E6%95%A3%E4%BA%8B%E4%BB%B6%E6%A8%A1%E6%93%AC%E7%B3%BB%E5%88%97-2-simple-inventory-system-sis-48cee078b1b1?sk=500cd2f6900c1df38b2f0c4487669cf4)
+
 ### 存貨政策(Review policy)
 
 系統每期會檢視存貨水平，倘若存貨水平低於**Minimum inventory level**則會立刻補貨至**Maximum inventory level**水平。
@@ -32,6 +34,8 @@ Use C# Winform to simulate the simple discrete event system
 
 ## Single -Server Queue
 模擬單一server的服務系統
+
+介紹文章請看 [離散事件模擬(1)：Single Server Queue Monitoring (SSQ)](https://medium.com/%E9%82%B1%E7%A7%89%E8%AA%A0%E7%A8%8B%E5%BC%8F%E6%9C%AD%E8%A8%98/%E9%9B%A2%E6%95%A3%E4%BA%8B%E4%BB%B6%E6%A8%A1%E6%93%AC%E7%B3%BB%E5%88%97-1-single-server-queue-monitoring-951f52fbe5c3?sk=904f8c94fabdec6034a83a08c27b4824)
 
 ### 系統假設
 
