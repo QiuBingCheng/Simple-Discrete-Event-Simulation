@@ -22,7 +22,7 @@ Use C# Winform to simulate the simple discrete event system
 * **未消化訂單(back ordering)是被允許的**。意味客戶已經下單，但交期延後，因此存貨水平有可能降至負的，此時缺貨成本(Shortage cost)會發生。
 * **不會有延遲交貨( No delivery lag)**。向廠商訂購，廠商會立刻配送項目。這是不切實際的假設，在未來更為複雜的存貨模擬系統會被移除。
 * 每期的需求量服從常態分布。
-* 最初以及最後的存貨水平需為Maximum inventory level (S)。
+* 最初以及最後的存貨水平需為**Maximum inventory level**。
 
 ### 系統運作截圖
 
