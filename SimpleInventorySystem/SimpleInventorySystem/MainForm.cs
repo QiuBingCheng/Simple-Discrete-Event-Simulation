@@ -16,24 +16,41 @@ namespace SimpleInventorySystem
     {
         Random random = new Random();
         int[] demandQuantity;
-        int minimumLevel;
-        int maximumLevel;
-        int numberOfPeriods;
-        double ItemCost;
-        double SetupCost;
-        double HoldingCost;
-        double ShortageCost;
-
-        //new data 
-        int mu;
-        double std;
-
+     
         public MyForm()
         {
             InitializeComponent();
-            btnSaveFile.Enabled = false;
-        }
 
+            // default setting
+            nudMinimumInventory.Value = 20;
+            nudMaximumInventory.Value = 60;
+            nudNumberOfIntervals.Value = nudNumberOfIntervals2.Value = 12;
+            nudAverageDemand.Value = nudAverageDemand2.Value = 25;
+            tbDemandVariance.Text = tbDemandVariance2.Text = "12";
+            tbItemCost.Text = "8000";
+            tbOrderSetupCost.Text = "1000";
+            tbHoldingCost.Text = "25";
+            tbShortageCost.Text = "700";
+
+            // genereate demand
+            generateDemandData();
+
+        }
+        private void generateDemandData()
+        {
+            int numberOfPeriods = (int)nudNumberOfIntervals.Value;
+            demandQuantity = new int[numberOfPeriods];
+            int mu = (int)nudAverageDemand.Value;
+            double std = Math.Sqrt(Convert.ToDouble(tbDemandVariance.Text));
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < numberOfPeriods; i++)
+            {
+                demandQuantity[i] = Convert.ToInt32(GaussianRandomGenerator(mu, std));
+                sb.Append($"d{i + 1} = {demandQuantity[i]}\r\n");
+            }
+            tbDemandData.Text = sb.ToString();
+        }
         private void openProblemToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (dlgOpen.ShowDialog() != DialogResult.OK) return;
@@ -41,38 +58,40 @@ namespace SimpleInventorySystem
             Name = Path.GetFileName(dlgOpen.FileName);
             StringBuilder sb = new StringBuilder();
             StreamReader sr = new StreamReader((dlgOpen.FileName));
-            char[] seps = { ' ', ',' };
-            string[] items = sr.ReadLine().Split(seps, StringSplitOptions.RemoveEmptyEntries);
-            minimumLevel = Convert.ToInt32(items[0]);
-            maximumLevel = Convert.ToInt32(items[1]);
-            numberOfPeriods = Convert.ToInt32(items[2]);
-            demandQuantity = new int[numberOfPeriods];
-            sb.Append($"{minimumLevel} {maximumLevel} {numberOfPeriods}\r\n");
-
-            for (int i = 0; i < numberOfPeriods; i++)
-            {
-                demandQuantity[i] = Convert.ToInt32(sr.ReadLine().Trim());
-                sb.Append($"{demandQuantity[i]}\r\n");
-            }
+            char[] seps = { ':'};
+            string[] items;
 
             items = sr.ReadLine().Split(seps, StringSplitOptions.RemoveEmptyEntries);
-            ItemCost = Convert.ToInt32(items[0]);
-            SetupCost = Convert.ToInt32(items[1]);
-            HoldingCost = Convert.ToInt32(items[2]);
-            ShortageCost = Convert.ToInt32(items[3]);
-            sb.Append($"{ItemCost} {SetupCost} {HoldingCost} {ShortageCost}");
+            nudMinimumInventory.Value = Convert.ToInt32(items[1].Trim());
+
+            items = sr.ReadLine().Split(seps, StringSplitOptions.RemoveEmptyEntries);
+            nudMaximumInventory.Value = Convert.ToInt32(items[1].Trim());
+
+            items = sr.ReadLine().Split(seps, StringSplitOptions.RemoveEmptyEntries);
+            nudNumberOfIntervals.Value = Convert.ToInt32(items[1].Trim());
+
+            items = sr.ReadLine().Split(seps, StringSplitOptions.RemoveEmptyEntries);
+            nudAverageDemand.Value = Convert.ToInt32(items[1].Trim());
+
+            items = sr.ReadLine().Split(seps, StringSplitOptions.RemoveEmptyEntries);
+            tbDemandVariance.Text = items[1].Trim();
+
+            items = sr.ReadLine().Split(seps, StringSplitOptions.RemoveEmptyEntries);
+            tbItemCost.Text = items[1].Trim();
+
+            items = sr.ReadLine().Split(seps, StringSplitOptions.RemoveEmptyEntries);
+            tbOrderSetupCost.Text = items[1].Trim();
+
+            items = sr.ReadLine().Split(seps, StringSplitOptions.RemoveEmptyEntries);
+            tbHoldingCost.Text = items[1].Trim();
+
+            items = sr.ReadLine().Split(seps, StringSplitOptions.RemoveEmptyEntries);
+            tbShortageCost.Text = items[1].Trim();
+
             sr.Close();
-
-            lbItemCost.Text = lbItemCost.Text.Split('：')[0] + '：' + ItemCost;
-            lbHoldingCost.Text = lbHoldingCost.Text.Split('：')[0] + '：' + HoldingCost;
-            lbSetupCost.Text = lbSetupCost.Text.Split('：')[0] + '：' + SetupCost;
-            lbShortageCost.Text = lbShortageCost.Text.Split('：')[0] + '：' + ShortageCost;
-
-            tbInventoryInfo.Text = sb.ToString();
-            lbProblemName.Text = lbProblemName.Text.Split('：')[0] + '：' + Name;
-            btnSimulateTheInventory.Enabled = true;
-            btnFidnOptimum.Enabled = true;
-
+            lbSettingsName.Text = dlgOpen.FileName;
+            generateDemandData();
+            MessageBox.Show("Load settings sucessfully~", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private double GaussianRandomGenerator(double mu, double sigma)
@@ -84,43 +103,7 @@ namespace SimpleInventorySystem
                          Math.Sin(2.0 * Math.PI * u2);
             return mu + sigma * randStdNormal;
         }
-        private void btnCreateData_Click(object sender, EventArgs e)
-        {
-           
-            minimumLevel = Convert.ToInt32(nudMinimumInventory.Value);
-            maximumLevel = Convert.ToInt32(nudMaximumInventoryLevel.Value);
-            numberOfPeriods = Convert.ToInt32(nudNumberOfIntervals.Value);
-            mu = Convert.ToInt32(nudAverageDemand.Value);
-            std = Math.Sqrt(Convert.ToDouble(tbDemandVariance.Text));
-            ItemCost = Convert.ToInt32(tbItemCost.Text);
-            SetupCost = Convert.ToInt32(tbOrderSetupCost.Text);
-            HoldingCost = Convert.ToInt32(tbHoldingCost.Text);
-            ShortageCost = Convert.ToInt32(tbShortageCost.Text);
-            demandQuantity = new int[numberOfPeriods];
-
-            StringBuilder sb = new StringBuilder();
-            sb.Append($"{minimumLevel} {maximumLevel} {numberOfPeriods}\r\n");
-
-            for (int i = 0; i < numberOfPeriods; i++)
-            {
-                demandQuantity[i] = Convert.ToInt32(GaussianRandomGenerator(mu, std));
-                sb.Append($"{demandQuantity[i]}\r\n");
-            }
-
-            sb.Append($"{ItemCost} {SetupCost} {HoldingCost} {ShortageCost}");
-            lbItemCost.Text = lbItemCost.Text.Split('：')[0]+"："+ItemCost.ToString();
-            lbSetupCost.Text = lbSetupCost.Text.Split('：')[0] + "：" + SetupCost.ToString();
-            lbShortageCost.Text = lbShortageCost.Text.Split('：')[0] + "：" + ShortageCost.ToString();
-            lbHoldingCost.Text = lbHoldingCost.Text.Split('：')[0] + "：" + HoldingCost.ToString();
-            lbProblemName.Text = lbProblemName.Text.Split('：')[0] + "：" + "New Problem";
-            tbInventoryInfo.Text = sb.ToString();
-            btnSaveFile.Enabled = true;
-            btnSimulateTheInventory.Enabled = true;
-
-            MessageBox.Show("Create data sucessfully! You can simulate new data or save it!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        
-        }
-
+     
         void AddPoint(int x,int y)
         {
             inventoryChart.Series["Inventory Level"].Points.AddXY(x, y);
@@ -129,6 +112,15 @@ namespace SimpleInventorySystem
         private void btnSimulateTheProcess_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
+            // read setting
+            int minimumLevel = (int)nudMinimumInventory.Value;
+            int maximumLevel = (int)nudMaximumInventory.Value;
+            int numberOfPeriods = (int)nudNumberOfIntervals.Value;
+            double ItemCost = Convert.ToDouble(tbItemCost.Text);
+            double SetupCost = Convert.ToDouble(tbOrderSetupCost.Text);
+            double HoldingCost = Convert.ToDouble(tbHoldingCost.Text);
+            double ShortageCost = Convert.ToDouble(tbShortageCost.Text); 
 
             //clear chart
             for (int i = 0; i < 3; i++)
@@ -183,18 +175,26 @@ namespace SimpleInventorySystem
             }
 
             AddPoint(numberOfPeriods, maximumLevel);
-            lbAverDemand.Text = lbAverDemand.Text.Split('：')[0] + "：" + (quantity/(float)numberOfPeriods).ToString("00.000");
-            lbAverOrder.Text = lbAverOrder.Text.Split('：')[0] + "：" + (totalOrder / (float)numberOfPeriods).ToString("00.000");
-            lbAverageOrder2.Text = lbAverageOrder2.Text.Split('：')[0]+ "：" + ((orderCount/(float)numberOfPeriods)).ToString("00.000");
+            lbAverDemand.Text = lbAverDemand.Text.Split('：')[0] + "： " + (quantity/(float)numberOfPeriods).ToString("00.00");
+            lbAverOrder.Text = lbAverOrder.Text.Split('：')[0] + "： " + (totalOrder / (float)numberOfPeriods).ToString("00.00");
             
-            lbTimeAveragedHoldingLevel.Text = lbTimeAveragedHoldingLevel.Text.Split('：')[0] + "：" + (holdingArea / numberOfPeriods).ToString("00.000");
-            lbTimeAveragedShortageLevel.Text = lbTimeAveragedShortageLevel.Text.Split('：')[0] + "：" + (shortageArea / numberOfPeriods).ToString("00.000");
+            lbTimeAveragedHoldingLevel.Text = lbTimeAveragedHoldingLevel.Text.Split('：')[0] + "： " + (holdingArea / numberOfPeriods).ToString("00.00");
+            lbTimeAveragedShortageLevel.Text = lbTimeAveragedShortageLevel.Text.Split('：')[0] + "： " + (shortageArea / numberOfPeriods).ToString("00.00");
             sw.Stop();
             lbMessage.Text = sw.Elapsed.TotalSeconds + " Sec    / " +((float)sw.Elapsed.TotalSeconds / 60.0).ToString("N2") +" min";
         }
 
         private void btnFindOptimum_Click(object sender, EventArgs e)
         {
+            // read setting
+            int maximumLevel = (int)nudMaximumInventory.Value;
+            int numberOfPeriods = (int)nudNumberOfIntervals.Value;
+            double ItemCost = Convert.ToDouble(tbItemCost.Text);
+            double SetupCost = Convert.ToDouble(tbOrderSetupCost.Text);
+            double HoldingCost = Convert.ToDouble(tbHoldingCost.Text);
+            double ShortageCost = Convert.ToDouble(tbShortageCost.Text);
+
+
             System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
             for (int i = 0; i < 3; i++)
                 OptimizationChart.Series[i].Points.Clear();
@@ -255,8 +255,8 @@ namespace SimpleInventorySystem
             }
 
             sw.Stop();
-            lbBestMinumLevel.Text = lbBestMinumLevel.Text.Split('：')[0] + "：" + bestMinimumLevel;
-            lbMinumumCostSpent.Text = lbMinumumCostSpent.Text.Split('：')[0] + "：" + miniumSpent;
+            lbBestMinumLevel.Text = lbBestMinumLevel.Text.Split('：')[0] + "： " + bestMinimumLevel.ToString("00.00"); ;
+            lbMinumumCostSpent.Text = lbMinumumCostSpent.Text.Split('：')[0] + "： " + miniumSpent.ToString("00.00");
             lbMessage.Text = sw.Elapsed.TotalSeconds + " Sec    / " + ((float)sw.Elapsed.TotalSeconds / 60.0).ToString("N2") + " min";
         }
 
@@ -267,16 +267,52 @@ namespace SimpleInventorySystem
 
             string path = dlgSave.FileName;
 
+            // save file
             using (StreamWriter outputFile = new StreamWriter(path))
             {
-                outputFile.WriteLine($"{minimumLevel} {maximumLevel} {numberOfPeriods}");
-                for (int i = 0; i < numberOfPeriods; i++)
-                    outputFile.WriteLine($"{demandQuantity[i]}");
-
-                outputFile.WriteLine($"{ItemCost} {SetupCost} {HoldingCost} {ShortageCost}");
+                outputFile.WriteLine($"Minimum Inventory Level: {nudMinimumInventory.Value}");
+                outputFile.WriteLine($"Maximum Inventory Level: {nudMaximumInventory.Value}");
+                outputFile.WriteLine($"number Of Periods: {nudNumberOfIntervals.Value}");
+                outputFile.WriteLine($"Average Demand: {nudAverageDemand.Value}");
+                outputFile.WriteLine($"Demand Variance: {Convert.ToDouble(tbDemandVariance.Text)}");
+                outputFile.WriteLine($"Item Cost: {Convert.ToDouble(tbItemCost.Text)}");
+                outputFile.WriteLine($"Order Setup Cost: {Convert.ToDouble(tbOrderSetupCost.Text)}");
+                outputFile.WriteLine($"Holding Cost: {Convert.ToDouble(tbHoldingCost.Text)}");
+                outputFile.WriteLine($"Shortage Cost: {Convert.ToDouble(tbShortageCost.Text)}");
                 outputFile.Close();
-                MessageBox.Show("save data sucessfully~", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Save settings sucessfully~", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+            lbSettingsName.Text = dlgSave.FileName;
+        }
+
+        private void btnGenerateDemand_Click(object sender, EventArgs e)
+        {
+            generateDemandData();
+        }
+
+        private void OptimizationChart_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void nudNumberOfIntervals_ValueChanged(object sender, EventArgs e)
+        {
+            nudNumberOfIntervals2.Value = nudNumberOfIntervals.Value;
+            generateDemandData();
+        }
+
+        private void nudAverageDemand_ValueChanged(object sender, EventArgs e)
+        {
+           
+            nudAverageDemand2.Value = nudAverageDemand.Value;
+            generateDemandData();
+        }
+
+        private void tbDemandVariance_TextChanged(object sender, EventArgs e)
+        {
+
+            tbDemandVariance2.Text = tbDemandVariance.Text;
+            generateDemandData();
         }
     }
 }
