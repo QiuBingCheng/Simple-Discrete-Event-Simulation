@@ -65,7 +65,7 @@ namespace SingleServerQueueMonitoring
                                       delayTimes[i], completionTimes[i]);
             }
           
-            lbProblemName.Text = lbProblemName.Text.Split('：')[0]+ "："+Name;
+            lbProblemName.Text = lbProblemName.Text.Split('：')[0]+ "： " +Name;
             btnSimulateTheProcess.Enabled = true;
             btnSimulateVariousServiceTime.Enabled = true;
             cbJobsInService.Checked = true;
@@ -122,8 +122,11 @@ namespace SingleServerQueueMonitoring
             }
             btnSimulateTheProcess.Enabled = true;
             btnSimulateVariousServiceTime.Enabled = true;
-            lbProblemName.Text = lbProblemName.Text.Split('：')[0] + "：New Problem";
-            MessageBox.Show("create data sucessfully！You can simulate the new data or save it if yout want.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            lbProblemName.Text = lbProblemName.Text.Split('：')[0] + "： *Untitled";
+            MessageBox.Show("Create data sucessfully！You can simulate the new data or save it if yout want.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+           
+        
         }
         
         void AddPointToNode(double x,int y )
@@ -236,16 +239,16 @@ namespace SingleServerQueueMonitoring
             }
          
             //average 
-            lbAverInterarrivalTime.Text = lbAverInterarrivalTime.Text.Split('：')[0] + "：" + (arrivalTimes[n - 1] / n).ToString("0.00");
-            lbAverDelayTime.Text = lbAverDelayTime.Text.Split('：')[0] + "：" + (delayTimes.Sum() / n).ToString("0.00");
-            lbAverServiceTime.Text = lbAverServiceTime.Text.Split('：')[0] + "：" + (serviceTimes.Sum() * serviceTimeFactor / n).ToString("0.00");
-            lbAverWaitTime.Text = lbAverWaitTime.Text.Split('：')[0] + "：" + ((delayTimes.Sum() + serviceTimes.Sum()) / n).ToString("0.00");
-            lbArrivalRate.Text = lbArrivalRate.Text.Split('：')[0] + "：" + (n / arrivalTimes[n - 1]).ToString("0.00");
-            lbServiceRate.Text = lbServiceRate.Text.Split('：')[0] + "：" + (n / (serviceTimes.Sum() * serviceTimeFactor)).ToString("0.00");
+            lbAverInterarrivalTime.Text = lbAverInterarrivalTime.Text.Split('：')[0] + "： " + (arrivalTimes[n - 1] / n).ToString("0.00");
+            lbAverDelayTime.Text = lbAverDelayTime.Text.Split('：')[0] + "： " + (delayTimes.Sum() / n).ToString("0.00");
+            lbAverServiceTime.Text = lbAverServiceTime.Text.Split('：')[0] + "： " + (serviceTimes.Sum() * serviceTimeFactor / n).ToString("0.00");
+            lbAverWaitTime.Text = lbAverWaitTime.Text.Split('：')[0] + "： " + ((delayTimes.Sum() + serviceTimes.Sum()) / n).ToString("0.00");
+            lbArrivalRate.Text = lbArrivalRate.Text.Split('：')[0] + "： " + (n / arrivalTimes[n - 1]).ToString("0.00");
+            lbServiceRate.Text = lbServiceRate.Text.Split('：')[0] + "： " + (n / (serviceTimes.Sum() * serviceTimeFactor)).ToString("0.00");
             
-            lbTimeAveragedJobsInNode.Text = lbTimeAveragedJobsInNode.Text.Split('：')[0] + "：" + (areaOfNode / t).ToString("0.00");
-            lbTimeAveragedJobsInQueue.Text = lbTimeAveragedJobsInQueue.Text.Split('：')[0] + "：" + (areaOfQueue/ t).ToString("0.00");
-            lbTimeAveragedJobsInServer.Text = lbTimeAveragedJobsInServer.Text.Split('：')[0] + "：" + (areaOfService / t).ToString("0.00");
+            lbTimeAveragedJobsInNode.Text = lbTimeAveragedJobsInNode.Text.Split('：')[0] + "： " + (areaOfNode / t).ToString("0.00");
+            lbTimeAveragedJobsInQueue.Text = lbTimeAveragedJobsInQueue.Text.Split('：')[0] + "： " + (areaOfQueue/ t).ToString("0.00");
+            lbTimeAveragedJobsInServer.Text = lbTimeAveragedJobsInServer.Text.Split('：')[0] + "： " + (areaOfService / t).ToString("0.00");
             
             sw.Stop();
             lbMessage.Text = sw.Elapsed.TotalSeconds + " Sec    / " +((float)sw.Elapsed.TotalSeconds / 60.0).ToString("N2") +" min";
@@ -393,12 +396,16 @@ namespace SingleServerQueueMonitoring
                         outputFile.WriteLine($"{arrivalTimes[i]} {serviceTimes[i]}");
                     }
                     outputFile.Close();
+                    lbProblemName.Text = Path.GetFileName(dlgSave.FileName);
                     MessageBox.Show("save data sucessfully~", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
 
-    
+        private void dgvJobInfo_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 
    
